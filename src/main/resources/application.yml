@@ -1,0 +1,36 @@
+spring:
+  data:
+    redis:
+      # 使用 db 1 与其他服务（如 Langfuse 占用的 db 0）隔离
+      # 如 Redis 启用了 requirepass，在 URI 中嵌入密码：redis://:password@host:port/db
+      url: ${REDIS_URI:redis://:myredissecret@localhost:6379/1}
+  ai:
+    # 本项目不使用 DashScope（用 DeepSeek），starter 启动强制要求 api-key，填 dummy 跳过校验
+    dashscope:
+      api-key: ${DASHSCOPE_API_KEY:dummy-not-used}
+
+agentic:
+  redis:
+    # 所有 key 在 Redis 中以 "agentic:" 开头，便于人工查看与清理
+    key-prefix: ${AGENTIC_REDIS_KEY_PREFIX:agentic}
+
+agent:
+  workspace: ${AGENT_WORKSPACE:workspace}  # 开发用相对路径，生产用绝对路径如 /var/agentscope/workspace
+  model:
+    base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com/v1}
+    api-key: ${DEEPSEEK_API_KEY}
+    model-name: ${DEEPSEEK_MODEL:deepseek-v4-flash}
+  sandbox:
+    image: python:3.12-slim
+    isolation-scope: SESSION
+
+otel:
+  exporter:
+    otlp:
+      # OTLP/HTTP 完整 URL（含 /v1/traces），通用 collector 默认端口 4318
+      # 切到 Langfuse：http://localhost:3000/api/public/otel/v1/traces（还需 Basic Auth header）
+      endpoint: ${LANGFUSE_OTEL_ENDPOINT:http://localhost:4318/v1/traces}
+
+server:
+  shutdown: graceful
+  port: 8080
