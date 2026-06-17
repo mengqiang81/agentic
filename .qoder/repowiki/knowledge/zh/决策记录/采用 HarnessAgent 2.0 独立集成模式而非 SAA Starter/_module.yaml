@@ -1,0 +1,7 @@
+schema_version: 1
+module_path: decisions/51795e2a84b1_b2d596166d90
+title: 采用 HarnessAgent 2.0 独立集成模式而非 SAA Starter
+scope: []
+source_files: []
+depends_on: []
+related_to: []

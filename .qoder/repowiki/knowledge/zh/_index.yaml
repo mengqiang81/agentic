@@ -1,0 +1,49 @@
+# 知识卡导出索引文件
+schema_version: 1
+locale: zh-CN
+branch: main
+exported_at: "2026-06-17T07:29:43Z"
+modules:
+    "":
+        dir_name: 通用智能体平台
+        title: 通用智能体平台
+        scope: []
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    decisions:
+        dir_name: 决策记录
+        title: 决策记录
+        scope: []
+        source_files: []
+        children:
+            - decisions/51795e2a84b1_7b4353bfeb24
+            - decisions/51795e2a84b1_4f906c8548f3
+            - decisions/51795e2a84b1_b2d596166d90
+        depends_on: []
+        related_to: []
+    decisions/51795e2a84b1_4f906c8548f3:
+        dir_name: 基于 Session 维度的 Docker 沙箱隔离策略
+        title: 基于 Session 维度的 Docker 沙箱隔离策略
+        scope: []
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    decisions/51795e2a84b1_7b4353bfeb24:
+        dir_name: 采用 RedisDistributedStore 实现全量分布式状态管理
+        title: 采用 RedisDistributedStore 实现全量分布式状态管理
+        scope: []
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    decisions/51795e2a84b1_b2d596166d90:
+        dir_name: 采用 HarnessAgent 2.0 独立集成模式而非 SAA Starter
+        title: 采用 HarnessAgent 2.0 独立集成模式而非 SAA Starter
+        scope: []
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []

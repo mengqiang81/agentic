@@ -41,5 +41,3 @@ Thumbs.db
 # Runtime workspace (agent 运行时生成的工作区，含用户数据/记忆/沙箱状态)
 workspace/
 
-# Qoder IDE cache
-.qoder/
