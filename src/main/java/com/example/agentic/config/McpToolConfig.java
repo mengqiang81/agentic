@@ -3,22 +3,21 @@ package com.example.agentic.config;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * MCP 工具注册配置。
+ * MCP 工具配置。
  * <p>
- * 支持两种注册方式：
- * 1. 静态注册（启动时）：通过配置文件定义 MCP Server 地址，启动时自动连接
- * 2. 动态注册（运行时）：通过 REST API POST /api/tools/mcp 热插拔
+ * 动态注册通过 REST API (McpToolController) 完成：
+ * POST /api/tools/mcp — 热插拔 MCP Server。
  * <p>
- * MCP 工具注册到 HarnessAgent Toolkit 后，agent 可在对话中自动调用。
+ * 如需启动时静态注册，可在此处声明 McpClientWrapper Bean，
+ * 并在 AgentConfig 中注入到 Toolkit。
  */
 @Configuration
 public class McpToolConfig {
-
-    // TODO: 静态 MCP 注册示例（当有可用的 MCP Server 时启用）
+    // 静态注册示例（当有可用的 MCP Server 时启用）：
     // @Bean
-    // public McpClient mcpClient() {
-    //     return McpClientBuilder.builder()
-    //         .transport(new SseHttpTransport("http://localhost:3000/mcp"))
-    //         .build();
+    // public McpClientWrapper staticMcpClient() {
+    //     return McpClientBuilder.create("static-server")
+    //         .sseTransport("http://localhost:3000/mcp")
+    //         .buildSync();
     // }
 }

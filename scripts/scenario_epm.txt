@@ -1,0 +1,8 @@
+# 4 轮业务对话场景：广州公司 26 年 1-4 月营业利润分析
+# 使用方法： python3 scripts/agui_chat.py --thread biz-test-$(date +%s) --script scripts/scenario_epm.txt
+# 每行一个 user 消息（# 开头为注释，空行会被跳过）
+
+26年1-4月广州公司营业利润实际数
+使用 地产行业_演示体系
+对比上述数据与预算目标
+分析1月预算目标未达成的原因

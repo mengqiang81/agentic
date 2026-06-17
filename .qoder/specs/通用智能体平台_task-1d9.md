@@ -348,9 +348,49 @@ AG-UI 事件映射（`agent/AgentEventMapper.java`）：
 | `ToolCallStartEvent` | `TOOL_CALL_START` |
 | `ToolCallEndEvent` | `TOOL_CALL_END` |
 | `ToolResultEvent` | `TOOL_CALL_RESULT` |
+| `RequireUserConfirmEvent` | `REQUIRE_USER_CONFIRM` |
 | `RunEndEvent` | `RUN_FINISHED` |
 
 多租户来源：从 `X-Tenant-Id`、`X-User-Id` Header 提取，构建 `RuntimeContext`
+
+### HITL（Human-in-the-Loop）支持
+
+agentscope PermissionEngine 对未配置 allow 规则的工具（特别是 MCP 工具）默认走 ASK → 触发 `RequireUserConfirmEvent` + `RequestStopEvent` → SSE 流终止。
+
+**已实现：**
+
+1. **事件暴露**（`AgentEventMapper`）：将 `RequireUserConfirmEvent` 映射为 `REQUIRE_USER_CONFIRM` SSE 事件，携带 `tool_calls` 列表
+2. **确认回传**（`AgUiController`）：`POST /awp/v1/runs` 的 request body 支持 `confirm_results` 字段：
+   ```json
+   {
+     "confirm_results": [
+       {"tool_call_id": "xxx", "tool_name": "bgm_ai_model_query", "confirmed": true, "input": {...}}
+     ]
+   }
+   ```
+3. **Agent 恢复**（`AgentSessionService`）：将 `confirm_results` 转为 `List<ConfirmResult>`，通过 `UserMessage.builder().metadata(Map.of(Msg.METADATA_CONFIRM_RESULTS, confirmResults))` 回传 agent，恢复 ASKING 状态的工具调用
+
+**此做法与 agentscope 官方文档完全一致**（参见 [Agent - Human-in-the-loop](https://java.agentscope.io/v2/en/docs/building-blocks/agent.html#human-in-the-loop)）。官方 `agentscope-agui-spring-boot-starter` 尚未内置 HITL 支持（参见 [Issue #1586](https://github.com/agentscope-ai/agentscope-java/issues/1586)），因此需要自行实现 HTTP 层的 `extractConfirmResults` 适配。
+
+**待实现：suggestedRules 传递**
+
+当前 `ConfirmResult` 使用 2 参数构造 `new ConfirmResult(confirmed, toolCall)`，未传递 `suggestedRules`。
+
+官方文档推荐在确认时回传 `tc.getSuggestedRules()`，这样相同的工具调用模式在未来会被 PermissionEngine 自动允许，无需重复确认：
+
+```java
+// 当前实现（无 rules）
+results.add(new ConfirmResult(confirmed, toolCall));
+
+// 改进目标（传递 suggestedRules）
+results.add(new ConfirmResult(confirmed, toolCall, toolCall.getSuggestedRules()));
+```
+
+改进要点：
+- `RequireUserConfirmEvent` → SSE 事件需额外携带每个 tool call 的 `suggested_rules` 字段
+- `confirm_results` JSON 需支持 `accept_rules: true/false` 标志
+- `extractConfirmResults` 需解析 rules 并传入 3 参数 `ConfirmResult` 构造函数
+- 客户端（`agui_chat.py`）需在自动批准时决定是否接受 suggestedRules
 
 ---
 

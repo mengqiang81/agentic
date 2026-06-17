@@ -1,5 +1,7 @@
 package com.example.agentic.config;
 
+import io.agentscope.core.permission.PermissionContextState;
+import io.agentscope.core.permission.PermissionMode;
 import io.agentscope.core.tracing.OtelTracingMiddleware;
 import io.agentscope.extensions.redis.RedisDistributedStore;
 import io.agentscope.harness.agent.DistributedStore;
@@ -79,6 +81,11 @@ public class AgentConfig {
                         .build())
                 // === 大工具结果卸载（超 80K 落盘 + 占位符） ===
                 .toolResultEviction(ToolResultEvictionConfig.defaults())
+                // === 权限模式：ACCEPT_EDITS，只读工具自动放行，写操作触发确认 ===
+                // MCP 工具的 HITL 由 AgentSessionService 层自动批准（待 MCP Server 声明 readOnlyHint 后可移除）
+                .permissionContext(PermissionContextState.builder()
+                        .mode(PermissionMode.ACCEPT_EDITS)
+                        .build())
                 // === Tracing Middleware ===
                 .middlewares(List.of(new OtelTracingMiddleware()))
                 .build();

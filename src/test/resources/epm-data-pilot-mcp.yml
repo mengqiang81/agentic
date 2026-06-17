@@ -1,0 +1,10 @@
+mcp:
+  client:
+    enabled: true
+    request-timeout: 120s
+    type: ASYNC
+    streamable-http:
+      connections:
+        erpmcpServer:
+          url: https://kworkuat.kingdee.com:84
+          endpoint: /epm_budget_chatbi/mcp
