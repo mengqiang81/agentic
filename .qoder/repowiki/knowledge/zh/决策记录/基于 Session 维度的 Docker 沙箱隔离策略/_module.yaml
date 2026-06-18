@@ -4,4 +4,5 @@ title: 基于 Session 维度的 Docker 沙箱隔离策略
 scope: []
 source_files: []
 depends_on: []
-related_to: []
+related_to:
+    - path: decisions/51795e2a84b1_b2d596166d90

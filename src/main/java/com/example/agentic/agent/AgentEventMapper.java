@@ -81,6 +81,11 @@ public class AgentEventMapper {
         // 事件在确认工具正常执行后才 flush 到前端
         private final Map<String, List<AgUiEvent>> pendingToolCalls = new HashMap<>();
 
+        // Text delta 合并缓冲：减少前端事件数量，避免 AG-UI 开发模式下
+        // structuredClone + Object.freeze 的 O(n²) 性能退化
+        private final StringBuilder textDeltaBuffer = new StringBuilder();
+        private static final int TEXT_BUFFER_FLUSH_THRESHOLD = 20;
+
         RunMapper(String threadId, String runId) {
             this.threadId = threadId;
             this.runId = runId;
@@ -136,7 +141,7 @@ public class AgentEventMapper {
             return List.of(new AgUiEvent("RUN_STARTED", data.toString()));
         }
 
-        // --- TEXT_MESSAGE_START + TEXT_MESSAGE_CONTENT ---
+        // --- TEXT_MESSAGE_START + TEXT_MESSAGE_CONTENT（带合并缓冲）---
         private List<AgUiEvent> mapTextDelta(TextBlockDeltaEvent e) {
             List<AgUiEvent> events = new ArrayList<>(2);
             if (!textMessageStarted) {
@@ -151,12 +156,26 @@ public class AgentEventMapper {
                 startData.put("role", "assistant");
                 events.add(new AgUiEvent("TEXT_MESSAGE_START", startData.toString()));
             }
+            // 合并 text delta 到缓冲区
+            textDeltaBuffer.append(safe(e.getDelta()));
+            // 达到阈值时 flush
+            if (textDeltaBuffer.length() >= TEXT_BUFFER_FLUSH_THRESHOLD) {
+                events.addAll(flushTextDeltaBuffer());
+            }
+            return events;
+        }
+
+        // --- flush text delta 缓冲 → 单个 TEXT_MESSAGE_CONTENT 事件 ---
+        private List<AgUiEvent> flushTextDeltaBuffer() {
+            if (textDeltaBuffer.isEmpty()) {
+                return Collections.emptyList();
+            }
             ObjectNode contentData = objectMapper.createObjectNode();
             contentData.put("type", "TEXT_MESSAGE_CONTENT");
             contentData.put("messageId", currentMessageId);
-            contentData.put("delta", safe(e.getDelta()));
-            events.add(new AgUiEvent("TEXT_MESSAGE_CONTENT", contentData.toString()));
-            return events;
+            contentData.put("delta", textDeltaBuffer.toString());
+            textDeltaBuffer.setLength(0);
+            return List.of(new AgUiEvent("TEXT_MESSAGE_CONTENT", contentData.toString()));
         }
 
         // --- TEXT_MESSAGE_END ---
@@ -165,21 +184,26 @@ public class AgentEventMapper {
                 return Collections.emptyList();
             }
             textMessageStarted = false;
+            List<AgUiEvent> events = new ArrayList<>(2);
+            // flush 剩余缓冲的 text delta
+            events.addAll(flushTextDeltaBuffer());
             ObjectNode data = objectMapper.createObjectNode();
             data.put("type", "TEXT_MESSAGE_END");
             data.put("messageId", currentMessageId);
-            return List.of(new AgUiEvent("TEXT_MESSAGE_END", data.toString()));
+            events.add(new AgUiEvent("TEXT_MESSAGE_END", data.toString()));
+            return events;
         }
 
         // --- TOOL_CALL_START (缓冲，不立即下发) ---
         // 缓冲 tool call 事件，等确认该工具正常执行后再 flush。
         // 如果是被中断的工具，缓冲将被丢弃。
         private List<AgUiEvent> mapToolCallStart(ToolCallStartEvent e) {
-            List<AgUiEvent> immediateEvents = new ArrayList<>(1);
+            List<AgUiEvent> immediateEvents = new ArrayList<>(2);
 
-            // 如果有未关闭的 text message，先发 TEXT_MESSAGE_END（这个需要立即发）
+            // 如果有未关闭的 text message，先 flush 缓冲再发 TEXT_MESSAGE_END
             if (textMessageStarted) {
                 textMessageStarted = false;
+                immediateEvents.addAll(flushTextDeltaBuffer());
                 ObjectNode endData = objectMapper.createObjectNode();
                 endData.put("type", "TEXT_MESSAGE_END");
                 endData.put("messageId", currentMessageId);
@@ -304,9 +328,10 @@ public class AgentEventMapper {
         private List<AgUiEvent> mapRunFinished() {
             List<AgUiEvent> events = new ArrayList<>(2);
 
-            // 如果有未关闭的 text message，先关闭
+            // 如果有未关闭的 text message，先 flush 缓冲再关闭
             if (textMessageStarted) {
                 textMessageStarted = false;
+                events.addAll(flushTextDeltaBuffer());
                 ObjectNode endData = objectMapper.createObjectNode();
                 endData.put("type", "TEXT_MESSAGE_END");
                 endData.put("messageId", currentMessageId);

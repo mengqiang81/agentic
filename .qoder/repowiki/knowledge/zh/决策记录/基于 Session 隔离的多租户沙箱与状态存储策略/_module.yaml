@@ -1,0 +1,7 @@
+schema_version: 1
+module_path: decisions/83b164d377e5_7708faee0943
+title: 基于 Session 隔离的多租户沙箱与状态存储策略
+scope: []
+source_files: []
+depends_on: []
+related_to: []

@@ -4,4 +4,5 @@ title: 采用 HarnessAgent 2.0 独立集成模式而非 SAA Starter
 scope: []
 source_files: []
 depends_on: []
-related_to: []
+related_to:
+    - path: decisions/51795e2a84b1_4f906c8548f3

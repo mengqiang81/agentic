@@ -1,0 +1,9 @@
+schema_version: 1
+module_path: frontend
+title: 通用智能体前端交互层
+scope:
+    - frontend/
+source_files: []
+depends_on: []
+related_to:
+    - path: decisions/51795e2a84b1_7b4353bfeb24
