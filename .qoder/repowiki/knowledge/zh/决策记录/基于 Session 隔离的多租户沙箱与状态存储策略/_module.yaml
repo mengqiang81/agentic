@@ -4,4 +4,6 @@ title: 基于 Session 隔离的多租户沙箱与状态存储策略
 scope: []
 source_files: []
 depends_on: []
-related_to: []
+related_to:
+    - path: decisions/51795e2a84b1_4f906c8548f3
+    - path: decisions/51795e2a84b1_7b4353bfeb24

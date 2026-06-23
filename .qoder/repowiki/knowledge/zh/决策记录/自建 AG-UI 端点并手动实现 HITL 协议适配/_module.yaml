@@ -1,0 +1,7 @@
+schema_version: 1
+module_path: decisions/f2b125f61236_cb0ff7d464c8
+title: 自建 AG-UI 端点并手动实现 HITL 协议适配
+scope: []
+source_files: []
+depends_on: []
+related_to: []

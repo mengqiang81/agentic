@@ -1,8 +1,7 @@
 schema_version: 1
-module_path: decisions/83b164d377e5_bc00964c548f
+module_path: decisions/f2b125f61236_2ec9d214c669
 title: 采用 Spring AI Alibaba 基础设施与 AgentScope HarnessAgent 2.0 分离架构
 scope: []
 source_files: []
 depends_on: []
-related_to:
-    - path: decisions/51795e2a84b1_b2d596166d90
+related_to: []

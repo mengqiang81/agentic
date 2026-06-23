@@ -1,0 +1,7 @@
+schema_version: 1
+module_path: decisions/f2b125f61236_95d6cf97fec3
+title: MVP 阶段仅支持 Session 级工作区隔离，暂不支持 Project 级共享
+scope: []
+source_files: []
+depends_on: []
+related_to: []

@@ -2,11 +2,11 @@
 schema_version: 1
 locale: zh-CN
 branch: main
-exported_at: "2026-06-17T15:17:59Z"
+exported_at: "2026-06-18T03:21:23Z"
 modules:
     "":
-        dir_name: 通用智能体平台
-        title: 通用智能体平台
+        dir_name: 通用智能体交互平台
+        title: 通用智能体交互平台
         scope: []
         source_files: []
         children: []
@@ -18,11 +18,14 @@ modules:
         scope: []
         source_files: []
         children:
-            - decisions/51795e2a84b1_4f906c8548f3
-            - decisions/83b164d377e5_ac13f59e04e3
             - decisions/83b164d377e5_bc00964c548f
+            - decisions/f2b125f61236_2ec9d214c669
             - decisions/51795e2a84b1_7b4353bfeb24
+            - decisions/51795e2a84b1_4f906c8548f3
             - decisions/51795e2a84b1_b2d596166d90
+            - decisions/f2b125f61236_cb0ff7d464c8
+            - decisions/f2b125f61236_95d6cf97fec3
+            - decisions/83b164d377e5_ac13f59e04e3
             - decisions/83b164d377e5_7708faee0943
         depends_on: []
         related_to: []
@@ -33,7 +36,9 @@ modules:
         source_files: []
         children: []
         depends_on: []
-        related_to: []
+        related_to:
+            - path: decisions/51795e2a84b1_4f906c8548f3
+            - path: decisions/51795e2a84b1_7b4353bfeb24
     decisions/83b164d377e5_ac13f59e04e3:
         dir_name: 自定义实现 AG-UI 协议端点与 HITL 机制
         title: 自定义实现 AG-UI 协议端点与 HITL 机制
@@ -41,7 +46,8 @@ modules:
         source_files: []
         children: []
         depends_on: []
-        related_to: []
+        related_to:
+            - path: frontend
     decisions/83b164d377e5_bc00964c548f:
         dir_name: 采用 Spring AI Alibaba 基础设施与 AgentScope HarnessAgent 2.0 分离架构
         title: 采用 Spring AI Alibaba 基础设施与 AgentScope HarnessAgent 2.0 分离架构
@@ -49,7 +55,8 @@ modules:
         source_files: []
         children: []
         depends_on: []
-        related_to: []
+        related_to:
+            - path: decisions/51795e2a84b1_b2d596166d90
     decisions/51795e2a84b1_4f906c8548f3:
         dir_name: 基于 Session 维度的 Docker 沙箱隔离策略
         title: 基于 Session 维度的 Docker 沙箱隔离策略
@@ -58,7 +65,7 @@ modules:
         children: []
         depends_on: []
         related_to:
-            - path: decisions/51795e2a84b1_b2d596166d90
+            - path: decisions/83b164d377e5_7708faee0943
     decisions/51795e2a84b1_7b4353bfeb24:
         dir_name: 采用 RedisDistributedStore 实现全量分布式状态管理
         title: 采用 RedisDistributedStore 实现全量分布式状态管理
@@ -67,7 +74,7 @@ modules:
         children: []
         depends_on: []
         related_to:
-            - path: frontend
+            - path: decisions/83b164d377e5_7708faee0943
     decisions/51795e2a84b1_b2d596166d90:
         dir_name: 采用 HarnessAgent 2.0 独立集成模式而非 SAA Starter
         title: 采用 HarnessAgent 2.0 独立集成模式而非 SAA Starter
@@ -76,7 +83,31 @@ modules:
         children: []
         depends_on: []
         related_to:
-            - path: decisions/51795e2a84b1_4f906c8548f3
+            - path: decisions/83b164d377e5_bc00964c548f
+    decisions/f2b125f61236_2ec9d214c669:
+        dir_name: 采用 Spring AI Alibaba 基础设施与 AgentScope HarnessAgent 2.0 分离架构_2
+        title: 采用 Spring AI Alibaba 基础设施与 AgentScope HarnessAgent 2.0 分离架构
+        scope: []
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    decisions/f2b125f61236_95d6cf97fec3:
+        dir_name: MVP 阶段仅支持 Session 级工作区隔离，暂不支持 Project 级共享
+        title: MVP 阶段仅支持 Session 级工作区隔离，暂不支持 Project 级共享
+        scope: []
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
+    decisions/f2b125f61236_cb0ff7d464c8:
+        dir_name: 自建 AG-UI 端点并手动实现 HITL 协议适配
+        title: 自建 AG-UI 端点并手动实现 HITL 协议适配
+        scope: []
+        source_files: []
+        children: []
+        depends_on: []
+        related_to: []
     frontend:
         dir_name: 通用智能体前端交互层
         title: 通用智能体前端交互层
@@ -86,4 +117,4 @@ modules:
         children: []
         depends_on: []
         related_to:
-            - path: decisions/51795e2a84b1_7b4353bfeb24
+            - path: decisions/83b164d377e5_ac13f59e04e3
